@@ -13,9 +13,10 @@
       --glass-border: rgba(255, 255, 255, 0.1);
       --text-muted: rgba(255, 255, 255, 0.4);
       --fg: #e8f0ff;
-      --c-btn: #f0bd00;
       --a-btn: #4969e6;
       --b-btn: #2aa850;
+      --x-btn: #f0bd00;
+      --y-btn: #e84855;
       --radius-md: 16px;
       --radius-lg: 24px;
     }
@@ -72,10 +73,11 @@
 
     .screen-wrapper {
       background: #000;
-      aspect-ratio: 4/3;
-      height: 100%;
-      width: auto;
-      max-width: 100%;
+      aspect-ratio: 3/4;
+      width: 100%;
+      height: auto;
+      max-height: 100%;
+      max-width: min(60vh, 100%);
       border-radius: var(--radius-md);
       position: relative;
       box-shadow: 0 0 50px rgba(0,0,0,0.6);
@@ -87,10 +89,10 @@
     }
 
     /*
-     * RESOLUTION FIX:
-     * The canvas PIXEL dimensions are set in JS to 640x480 (or 1280x960 for HiDPI).
+     * DS RESOLUTION:
+     * DS native resolution is 256×192 per screen, stacked = 256×384 total (3:4 ratio)
+     * The canvas PIXEL dimensions are set in JS to match DS output.
      * CSS stretches it to fill the container — this gives sharp, full-resolution output.
-     * Do NOT set width/height in CSS to pixel values; use 100%/auto for scaling.
      */
     canvas {
       width: 100%;
@@ -118,22 +120,17 @@
     }
     .idle-hint.hidden { opacity: 0; }
 
-    /* ── FLUID SCALING ──────────────────────────────
-       All control sizes derive from --s, a single scale
-       unit clamped between phone and desktop sizes.
-       Portrait: --s based on vw. Landscape: based on vh.
-    ── */
     :root {
-      --s: clamp(3px, 2.2vw, 10px); /* base scale unit */
+      --s: clamp(3px, 2.2vw, 10px);
     }
 
     .controls-area {
       flex: 0 0 auto;
       height: auto;
-      min-height: 44vh;
-      min-height: 44dvh;
-      max-height: 52vh;
-      max-height: 52dvh;
+      min-height: 38vh;
+      min-height: 38dvh;
+      max-height: 48vh;
+      max-height: 48dvh;
       padding: 8px max(12px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
       display: grid;
       grid-template-columns: 1fr auto 1fr;
@@ -162,145 +159,105 @@
       box-shadow: 0 0 15px rgba(255,255,255,0.1);
     }
 
-    /* LEFT GROUP */
+    /* LEFT GROUP - D-Pad */
     .group-left {
       display: flex; flex-direction: column;
       align-items: center; justify-content: flex-end;
       gap: calc(var(--s) * 1);
       position: relative;
     }
-    .stick-dpad-row {
-      display: flex; flex-direction: row;
-      align-items: center;
-      gap: calc(var(--s) * 1.5);
-    }
-    .shoulder-row {
-      display: flex; gap: calc(var(--s) * 1.5);
-      width: 100%; justify-content: center;
-      margin-bottom: calc(var(--s) * 1);
-    }
-    .btn-shoulder {
-      width: calc(var(--s) * 7); height: calc(var(--s) * 3.5);
-      border-radius: calc(var(--s) * 2);
-      font-size: calc(var(--s) * 1.3); font-weight: 700;
-    }
-    .analog-area {
-      position: relative;
-      width: calc(var(--s) * 15); height: calc(var(--s) * 15);
-      margin-bottom: calc(var(--s) * 1);
-    }
-    .stick-base {
-      position: absolute; inset: 0;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--glass-border);
-    }
-    .stick-nub {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5);
-      margin: calc(var(--s) * -2.75) 0 0 calc(var(--s) * -2.75);
-      border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
-      pointer-events: none;
-      transition: transform 0.05s linear;
-    }
-    .analog-area.active .stick-nub { background: var(--acc); box-shadow: 0 0 20px var(--acc-glow); border-color: transparent; }
     .dpad {
-      width: calc(var(--s) * 11); height: calc(var(--s) * 11);
+      width: calc(var(--s) * 13); height: calc(var(--s) * 13);
       position: relative;
     }
-    .dpad-btn { position: absolute; width: calc(var(--s) * 3.8); height: calc(var(--s) * 3.8); border-radius: 6px; }
-    .dpad-btn.up    { top: 0;    left: calc(var(--s) * 3.6); border-radius: 6px 6px 2px 2px; }
-    .dpad-btn.down  { bottom: 0; left: calc(var(--s) * 3.6); border-radius: 2px 2px 6px 6px; }
-    .dpad-btn.left  { top: calc(var(--s) * 3.6); left: 0;   border-radius: 6px 2px 2px 6px; }
-    .dpad-btn.right { top: calc(var(--s) * 3.6); right: 0;  border-radius: 2px 6px 6px 2px; }
+    .dpad-btn { position: absolute; width: calc(var(--s) * 4.5); height: calc(var(--s) * 4.5); border-radius: 6px; }
+    .dpad-btn.up    { top: 0;    left: calc(var(--s) * 4.25); border-radius: 8px 8px 2px 2px; }
+    .dpad-btn.down  { bottom: 0; left: calc(var(--s) * 4.25); border-radius: 2px 2px 8px 8px; }
+    .dpad-btn.left  { top: calc(var(--s) * 4.25); left: 0;   border-radius: 8px 2px 2px 8px; }
+    .dpad-btn.right { top: calc(var(--s) * 4.25); right: 0;  border-radius: 2px 8px 8px 2px; }
     .dpad-center {
       position: absolute;
-      top: calc(var(--s) * 3.6); left: calc(var(--s) * 3.6);
-      width: calc(var(--s) * 3.8); height: calc(var(--s) * 3.8);
+      top: calc(var(--s) * 4.25); left: calc(var(--s) * 4.25);
+      width: calc(var(--s) * 4.5); height: calc(var(--s) * 4.5);
       background: var(--glass); pointer-events: none;
     }
 
-    /* CENTER GROUP */
+    /* CENTER GROUP - Start/Select */
     .group-center {
-      display: flex; align-items: flex-end; justify-content: center;
-      padding-bottom: calc(var(--s) * 3);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      gap: calc(var(--s) * 1);
+      padding-bottom: calc(var(--s) * 2);
+    }
+    .btn-select {
+      width: calc(var(--s) * 6); height: calc(var(--s) * 2.5);
+      border-radius: calc(var(--s) * 1.5);
+      font-size: calc(var(--s) * 0.9); font-weight: 700;
+      letter-spacing: 0.5px;
     }
     .btn-start {
-      width: calc(var(--s) * 8); height: calc(var(--s) * 3);
-      border-radius: calc(var(--s) * 2);
-      font-size: calc(var(--s) * 1.1); font-weight: 700; color: #ff6b6b;
-      letter-spacing: 1px;
+      width: calc(var(--s) * 6); height: calc(var(--s) * 2.5);
+      border-radius: calc(var(--s) * 1.5);
+      font-size: calc(var(--s) * 0.9); font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    /* RIGHT GROUP */
+    /* RIGHT GROUP - Face Buttons (A/B/X/Y) & Shoulders */
     .group-right {
       position: relative;
       display: flex; flex-direction: column;
       align-items: flex-end; justify-content: flex-end;
       gap: calc(var(--s) * 1);
     }
-    .btn-r {
-      position: absolute;
-      top: 0; right: 0;
-      width: calc(var(--s) * 7); height: calc(var(--s) * 3.5);
-      border-radius: calc(var(--s) * 2);
-      font-size: calc(var(--s) * 1.3); font-weight: 700;
+    .shoulder-row {
+      display: flex; gap: calc(var(--s) * 1.5);
+      margin-bottom: calc(var(--s) * 1);
     }
-    .actions-grid {
-      display: flex; flex-direction: column;
-      align-items: flex-end;
-      gap: calc(var(--s) * 1);
-      padding-top: calc(var(--s) * 5);
+    .btn-shoulder {
+      width: calc(var(--s) * 6); height: calc(var(--s) * 3);
+      border-radius: calc(var(--s) * 1.5);
+      font-size: calc(var(--s) * 1.1); font-weight: 700;
     }
 
-    /* C BUTTONS */
-    .c-group {
+    /* DS Face Buttons (A/B/X/Y diamond layout) */
+    .face-buttons {
       position: relative;
-      width: calc(var(--s) * 11); height: calc(var(--s) * 11);
-      flex-shrink: 0;
-    }
-    .btn-c {
-      position: absolute;
-      width: calc(var(--s) * 3.5); height: calc(var(--s) * 3.5);
-      border-radius: 50%;
-      font-size: calc(var(--s) * 0.95); font-weight: 700;
-      color: var(--c-btn); border-color: rgba(240, 189, 0, 0.2);
-    }
-    .btn-c.pressed { background: var(--c-btn); color: #000; }
-    .c-up    { top: 0;                         left: calc(var(--s) * 3.75); }
-    .c-down  { bottom: 0;                      left: calc(var(--s) * 3.75); }
-    .c-left  { top: calc(var(--s) * 3.75);    left: 0; }
-    .c-right { top: calc(var(--s) * 3.75);    right: 0; }
-
-    /* A/B BUTTONS */
-    .ab-group {
-      position: relative;
-      width: calc(var(--s) * 13); height: calc(var(--s) * 12);
+      width: calc(var(--s) * 13); height: calc(var(--s) * 13);
       flex-shrink: 0;
     }
     .btn-circle {
       position: absolute; border-radius: 50%;
-      font-weight: 700; font-size: calc(var(--s) * 2);
+      font-weight: 700; font-size: calc(var(--s) * 1.8);
       pointer-events: all;
     }
     .btn-a {
-      width: calc(var(--s) * 6); height: calc(var(--s) * 6);
-      bottom: calc(var(--s) * 3); right: 0;
+      width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5);
+      right: 0; top: calc(var(--s) * 3.75);
       color: #9bb0ff; border-color: rgba(73, 105, 230, 0.3);
       z-index: 1;
     }
     .btn-a.pressed { background: var(--a-btn); color: #fff; border-color: var(--a-btn); }
     .btn-b {
-      width: calc(var(--s) * 5); height: calc(var(--s) * 5);
-      bottom: 0; left: 0;
+      width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5);
+      right: calc(var(--s) * 3.75); bottom: 0;
       color: #8affae; border-color: rgba(42, 168, 80, 0.3);
       z-index: 1;
     }
     .btn-b.pressed { background: var(--b-btn); color: #fff; border-color: var(--b-btn); }
+    .btn-x {
+      width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5);
+      right: calc(var(--s) * 3.75); top: 0;
+      color: #ffe89b; border-color: rgba(240, 189, 0, 0.3);
+      z-index: 1;
+    }
+    .btn-x.pressed { background: var(--x-btn); color: #000; border-color: var(--x-btn); }
+    .btn-y {
+      width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5);
+      left: 0; top: calc(var(--s) * 3.75);
+      color: #ff9b9b; border-color: rgba(232, 72, 85, 0.3);
+      z-index: 1;
+    }
+    .btn-y.pressed { background: var(--y-btn); color: #fff; border-color: var(--y-btn); }
 
     .settings-modal {
       display: none; position: fixed; inset: 0;
@@ -331,7 +288,6 @@
 
       body { flex-direction: column; overflow: hidden; }
 
-      /* Keep top-bar visible above the game in landscape */
       .top-bar { display: flex; }
 
       .game-container {
@@ -340,7 +296,7 @@
       }
       .screen-wrapper {
         border-radius: 0; border: none; box-shadow: none;
-        max-width: none; aspect-ratio: auto; width: 100%;
+        max-width: none; aspect-ratio: auto; width: auto; height: 100%; max-height: 100%;
       }
       .controls-area {
         height: 100vh; height: 100dvh; width: 100vw; max-height: 100dvh;
@@ -353,8 +309,7 @@
 
       .group-left {
         position: absolute; bottom: calc(var(--s) * 6); left: calc(var(--s) * 4);
-        align-items: flex-start; flex-direction: column;
-        justify-content: flex-end; gap: calc(var(--s) * 2);
+        align-items: flex-start;
       }
       .group-center {
         position: absolute; bottom: calc(var(--s) * 6);
@@ -362,10 +317,8 @@
       }
       .group-right {
         position: absolute; bottom: calc(var(--s) * 6); right: calc(var(--s) * 4);
-        align-items: flex-end; justify-content: flex-end;
+        align-items: flex-end;
       }
-      .shoulder-row { margin-bottom: 0; }
-      .stick-dpad-row { gap: calc(var(--s) * 1.5); }
     }
   </style>
 </head>
@@ -374,7 +327,7 @@
   <div class="top-bar">
     <label class="icon-btn" title="Load ROM">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-      <input type="file" id="romInput" accept=".nds.ds.zip,application/octet-stream">
+      <input type="file" id="romInput" accept=".nds,.zip,application/octet-stream">
     </label>
     <div class="icon-btn" id="btnSettings" title="Settings">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -388,49 +341,36 @@
       <div class="scanlines" id="scanlines"></div>
       <div class="idle-hint" id="idleHint">
         <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px;opacity:0.3"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-        LOAD A ROM TO PLAY
+        LOAD A DS ROM TO PLAY
       </div>
-      <!-- Debug overlay: shows live gamepad state. Toggle with the bug button. -->
       <div id="debugOverlay" style="display:none;position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;font-family:monospace;color:#0f0;background:rgba(0,0,0,0.7);padding:4px;z-index:10;pointer-events:none;"></div>
     </div>
   </div>
 
   <div class="controls-area" id="controls">
     <div class="group-left">
-      <div class="shoulder-row">
-        <div class="touch-btn btn-shoulder" data-action="L">L</div>
-        <div class="touch-btn btn-shoulder" data-action="Z">Z</div>
-      </div>
-      <div class="stick-dpad-row">
-        <div class="analog-area" id="analogStick">
-          <div class="stick-base"></div>
-          <div class="stick-nub"></div>
-        </div>
-        <div class="dpad">
-          <div class="dpad-center"></div>
-          <div class="touch-btn dpad-btn up" data-action="DUP"></div>
-          <div class="touch-btn dpad-btn down" data-action="DDOWN"></div>
-          <div class="touch-btn dpad-btn left" data-action="DLEFT"></div>
-          <div class="touch-btn dpad-btn right" data-action="DRIGHT"></div>
-        </div>
+      <div class="dpad">
+        <div class="dpad-center"></div>
+        <div class="touch-btn dpad-btn up" data-action="DUP"></div>
+        <div class="touch-btn dpad-btn down" data-action="DDOWN"></div>
+        <div class="touch-btn dpad-btn left" data-action="DLEFT"></div>
+        <div class="touch-btn dpad-btn right" data-action="DRIGHT"></div>
       </div>
     </div>
     <div class="group-center">
+      <div class="touch-btn btn-select" data-action="SELECT">SELECT</div>
       <div class="touch-btn btn-start" data-action="START">START</div>
     </div>
     <div class="group-right">
-      <div class="touch-btn btn-r" data-action="R">R</div>
-      <div class="actions-grid">
-        <div class="c-group">
-          <div class="touch-btn btn-c c-up" data-action="CU">C▲</div>
-          <div class="touch-btn btn-c c-down" data-action="CD">C▼</div>
-          <div class="touch-btn btn-c c-left" data-action="CL">C◀</div>
-          <div class="touch-btn btn-c c-right" data-action="CR">C▶</div>
-        </div>
-        <div class="ab-group">
-          <div class="touch-btn btn-circle btn-a" data-action="A">A</div>
-          <div class="touch-btn btn-circle btn-b" data-action="B">B</div>
-        </div>
+      <div class="shoulder-row">
+        <div class="touch-btn btn-shoulder" data-action="L">L</div>
+        <div class="touch-btn btn-shoulder" data-action="R">R</div>
+      </div>
+      <div class="face-buttons">
+        <div class="touch-btn btn-circle btn-x" data-action="X">X</div>
+        <div class="touch-btn btn-circle btn-y" data-action="Y">Y</div>
+        <div class="touch-btn btn-circle btn-a" data-action="A">A</div>
+        <div class="touch-btn btn-circle btn-b" data-action="B">B</div>
       </div>
     </div>
   </div>
@@ -448,9 +388,9 @@
       <div class="setting-row">
         <span>Resolution</span>
         <select id="resSelect" style="background:#222;color:#fff;border:1px solid #333;border-radius:8px;padding:4px 8px;font-size:12px;">
-          <option value="1">640×480 (Native)</option>
-          <option value="2" selected>1280×960 (2×)</option>
-          <option value="3">1920×1440 (3×)</option>
+          <option value="1">256×384 (Native)</option>
+          <option value="2" selected>512×768 (2×)</option>
+          <option value="3">768×1152 (3×)</option>
         </select>
       </div>
       <div class="setting-row">
@@ -462,18 +402,16 @@
 
 <script>
 // ═══════════════════════════════════════════════════
-//  CANVAS RESOLUTION FIX
-//  Set the canvas pixel buffer to the actual N64 output
-//  resolution. The CSS will scale it to fit the container.
-//  The libretro core respects Module.canvas width/height.
+//  DS CANVAS RESOLUTION
+//  DS native: 256×192 per screen, stacked = 256×384 (3:4 ratio)
 // ═══════════════════════════════════════════════════
 const canvas = document.getElementById('canvas');
-let resMultiplier = 2; // Default 2× (1280×960)
+let resMultiplier = 2;
 
 function setCanvasResolution(mult) {
   resMultiplier = mult;
-  canvas.width  = 640 * mult;
-  canvas.height = 480 * mult;
+  canvas.width  = 256 * mult;
+  canvas.height = 384 * mult;
 }
 setCanvasResolution(resMultiplier);
 
@@ -482,87 +420,48 @@ document.getElementById('resSelect').addEventListener('change', function() {
 });
 
 // ═══════════════════════════════════════════════════
-//  VIRTUAL GAMEPAD — MULTI-LAYER INPUT SYSTEM
-//
-//  mupen64plus_next WASM uses THREE input paths depending
-//  on how it was compiled. We cover all three:
-//
-//  LAYER 1: navigator.getGamepads() override
-//    — Most libretro WASM cores poll this directly via
-//      Emscripten's SDL2 gamepad layer.
-//
-//  LAYER 2: Emscripten SDL2 internal state injection
-//    — After Module initializes, SDL2.gamepadTimestamp is
-//      patched so the core sees fresh input every frame.
-//      We also hook Module.SDL2.gamepad.* if exposed.
-//
-//  LAYER 3: Keyboard events (fallback)
-//    — Some core builds fall back to SDL keyboard input.
-//      We fire both keydown AND the gamepad path.
-//
-//  RETROPAD → N64 BUTTON MAP (mupen64plus_next default):
-//   buttons[0]  = RetroPad B     → N64 A button
-//   buttons[1]  = RetroPad Y     → N64 B button
-//   buttons[2]  = RetroPad Select
-//   buttons[3]  = RetroPad Start → N64 Start
-//   buttons[4]  = D-Up           → N64 D-Up
-//   buttons[5]  = D-Down         → N64 D-Down
-//   buttons[6]  = D-Left         → N64 D-Left
-//   buttons[7]  = D-Right        → N64 D-Right
-//   buttons[8]  = RetroPad A     → N64 C-Down (alt)
-//   buttons[9]  = RetroPad X     → N64 C-Left (alt)
-//   buttons[10] = L              → N64 L shoulder
-//   buttons[11] = R              → N64 R shoulder
-//   buttons[12] = L2             → N64 Z trigger
-//   buttons[13] = R2
-//   buttons[14] = L3
-//   buttons[15] = R3
-//   axes[0] = Left stick X       → N64 Analog X
-//   axes[1] = Left stick Y       → N64 Analog Y
-//   axes[2] = Right stick X      → N64 C-Left/Right
-//   axes[3] = Right stick Y      → N64 C-Up/Down
+//  VIRTUAL GAMEPAD FOR DS
+//  DS RetroPad mapping:
+//   buttons[0]  = B
+//   buttons[1]  = Y
+//   buttons[2]  = Select
+//   buttons[3]  = Start
+//   buttons[4]  = D-Up
+//   buttons[5]  = D-Down
+//   buttons[6]  = D-Left
+//   buttons[7]  = D-Right
+//   buttons[8]  = A
+//   buttons[9]  = X
+//   buttons[10] = L
+//   buttons[11] = R
 // ═══════════════════════════════════════════════════
 
-const NUM_BUTTONS = 17; // indices 0-15 + 1 spare
+const NUM_BUTTONS = 16;
 const NUM_AXES    = 4;
 
-// Live state — mutated directly, no copying until poll
 const gpButtons = new Float64Array(NUM_BUTTONS);
 const gpAxes    = new Float64Array(NUM_AXES);
 
-// Action → gamepad mapping
-// Switch Pro Controller button layout (what the core sees via SDL2):
-//   0=B  1=A  2=X  3=Y  4=L  5=R  6=ZL  7=ZR
-//   8=Minus  9=Plus  10=L3  11=R3
-//   12=D-Up  13=D-Down  14=D-Left  15=D-Right  16=Home
 const ACTION_MAP = {
-  A:      { type: 'button', index: 0  },   // → N64 A
-  B:      { type: 'button', index: 2  },   // → N64 B
-  START:  { type: 'button', index: 9  },   // Plus      → N64 Start
-  L:      { type: 'button', index: 4  },   // L         → N64 L
-  R:      { type: 'button', index: 5  },   // R         → N64 R
-  Z:      { type: 'button', index: 6  },   // ZL        → N64 Z trigger
-  DUP:    { type: 'button', index: 12 },
-  DDOWN:  { type: 'button', index: 13 },
-  DLEFT:  { type: 'button', index: 14 },
-  DRIGHT: { type: 'button', index: 15 },
-  CU:     { type: 'axis',   index: 3, value: -1 },
-  CD:     { type: 'axis',   index: 3, value:  1 },
-  CL:     { type: 'axis',   index: 2, value: -1 },
-  CR:     { type: 'axis',   index: 2, value:  1 },
+  A:      { type: 'button', index: 8  },
+  B:      { type: 'button', index: 0  },
+  X:      { type: 'button', index: 9  },
+  Y:      { type: 'button', index: 1  },
+  START:  { type: 'button', index: 3  },
+  SELECT: { type: 'button', index: 2  },
+  L:      { type: 'button', index: 10 },
+  R:      { type: 'button', index: 11 },
+  DUP:    { type: 'button', index: 4  },
+  DDOWN:  { type: 'button', index: 5  },
+  DLEFT:  { type: 'button', index: 6  },
+  DRIGHT: { type: 'button', index: 7  },
 };
-
-// Track held axis directions to resolve conflicts
-const axisHeld = { 2: {'-1':false,'1':false}, 3: {'-1':false,'1':false} };
 
 function pressAction(action) {
   const m = ACTION_MAP[action];
   if (!m) return;
   if (m.type === 'button') {
     gpButtons[m.index] = 1;
-  } else {
-    axisHeld[m.index][String(m.value)] = true;
-    recomputeAxis(m.index);
   }
   document.querySelectorAll(`[data-action="${action}"]`).forEach(el => el.classList.add('pressed'));
   if (navigator.vibrate) navigator.vibrate(8);
@@ -574,23 +473,14 @@ function releaseAction(action) {
   if (!m) return;
   if (m.type === 'button') {
     gpButtons[m.index] = 0;
-  } else {
-    axisHeld[m.index][String(m.value)] = false;
-    recomputeAxis(m.index);
   }
   document.querySelectorAll(`[data-action="${action}"]`).forEach(el => el.classList.remove('pressed'));
   updateDebug();
 }
 
-function recomputeAxis(i) {
-  const neg = axisHeld[i]['-1'], pos = axisHeld[i]['1'];
-  gpAxes[i] = (neg && pos) ? 0 : neg ? -1 : pos ? 1 : 0;
-}
-
-// ── LAYER 1: navigator.getGamepads() override ──────
 function buildFakeGamepad() {
   return {
-    id: 'Nintendo Switch Pro Controller (STANDARD GAMEPAD Vendor: 057e Product: 2009)',
+    id: 'Nintendo DS Controller (STANDARD GAMEPAD)',
     index: 0,
     connected: true,
     timestamp: performance.now(),
@@ -604,10 +494,6 @@ function buildFakeGamepad() {
   };
 }
 
-const _origGetGamepads = navigator.getGamepads
-  ? navigator.getGamepads.bind(navigator)
-  : () => [];
-
 Object.defineProperty(navigator, 'getGamepads', {
   value: function() {
     return [buildFakeGamepad(), null, null, null];
@@ -616,115 +502,24 @@ Object.defineProperty(navigator, 'getGamepads', {
   configurable: true,
 });
 
-// ── LAYER 2: Emscripten SDL2 internal injection ───
-// Emscripten SDL2 caches gamepad state in JS objects.
-// We overwrite them each frame so the core sees our input.
-function injectSDL2(gp) {
-  try {
-    const sdl2 = window.SDL2 || (window.Module && window.Module.SDL2);
-    if (!sdl2 || !sdl2.game_controllers) return;
-    // SDL2 stores game controllers in a dict keyed by index
-    const ctrl = sdl2.game_controllers[0] ||
-                 sdl2.game_controllers['0'];
-    if (!ctrl) return;
-    // Overwrite axes and buttons in-place
-    if (ctrl.axes) {
-      for (let i = 0; i < gpAxes.length; i++) ctrl.axes[i] = gpAxes[i];
-    }
-    if (ctrl.buttons) {
-      for (let i = 0; i < gpButtons.length; i++) {
-        ctrl.buttons[i] = gpButtons[i] >= 1 ? 1 : 0;
-      }
-    }
-    if (ctrl.timestamp !== undefined) ctrl.timestamp = performance.now();
-  } catch(_) {}
-}
-
-// ── Fire gamepadconnected at the right moment ──────
-// We fire it: (a) immediately, (b) after Module runtime
-// init, and (c) after ROM loads. Belt-and-suspenders.
 function fireGamepadConnected() {
   try {
     const ev = new Event('gamepadconnected');
     ev.gamepad = buildFakeGamepad();
     window.dispatchEvent(ev);
-    console.log('[LemonN64] gamepadconnected fired');
+    console.log('[DS] gamepadconnected fired');
   } catch(_) {}
 }
-// Fire immediately in case core is already listening
 setTimeout(fireGamepadConnected, 100);
 setTimeout(fireGamepadConnected, 1000);
 
-// ── DEBUG OVERLAY ──────────────────────────────────
 let debugVisible = false;
 function updateDebug() {
   const el = document.getElementById('debugOverlay');
   if (!el || !debugVisible) return;
   const btns = Array.from(gpButtons).map((v,i) => v ? `B${i}` : '').filter(Boolean);
-  const axes = Array.from(gpAxes).map((v,i) => `A${i}:${v.toFixed(2)}`);
-  el.textContent = `BTN:[${btns.join(' ')}]  AX:[${axes.join(' ')}]`;
+  el.textContent = `BTN:[${btns.join(' ')}]`;
 }
-
-// ═══════════════════════════════════════════════════
-//  ANALOG STICK — maps to axes[0] (X) and axes[1] (Y)
-// ═══════════════════════════════════════════════════
-const stickEl = document.getElementById('analogStick');
-const nub = stickEl.querySelector('.stick-nub');
-let stickTouchId = null;
-const MAX_RADIUS = 45;
-
-function handleStickMove(clientX, clientY) {
-  const rect = stickEl.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top  + rect.height / 2;
-  let dx = clientX - cx;
-  let dy = clientY - cy;
-  const dist = Math.sqrt(dx*dx + dy*dy);
-  if (dist > MAX_RADIUS) { dx *= MAX_RADIUS/dist; dy *= MAX_RADIUS/dist; }
-
-  nub.style.transform = `translate(${dx}px, ${dy}px)`;
-
-  // Normalize to [-1, 1] with a small dead-zone
-  const nx = dx / MAX_RADIUS;
-  const ny = dy / MAX_RADIUS;
-  const DEAD = 0.12;
-  gpAxes[0] = Math.abs(nx) > DEAD ? nx : 0;
-  gpAxes[1] = Math.abs(ny) > DEAD ? ny : 0;
-}
-
-function resetStick() {
-  nub.style.transform = 'translate(0px,0px)';
-  stickEl.classList.remove('active');
-  gpAxes[0] = 0;
-  gpAxes[1] = 0;
-}
-
-stickEl.addEventListener('touchstart', e => {
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  stickTouchId = t.identifier;
-  stickEl.classList.add('active');
-  handleStickMove(t.clientX, t.clientY);
-}, { passive: false });
-
-stickEl.addEventListener('touchmove', e => {
-  e.preventDefault();
-  for (const t of e.changedTouches) {
-    if (t.identifier === stickTouchId) { handleStickMove(t.clientX, t.clientY); break; }
-  }
-}, { passive: false });
-
-stickEl.addEventListener('touchend', e => {
-  for (const t of e.changedTouches) {
-    if (t.identifier === stickTouchId) { stickTouchId = null; resetStick(); break; }
-  }
-});
-
-// Mouse stick
-let draggingStick = false;
-stickEl.addEventListener('mousedown', e => { draggingStick = true; stickEl.classList.add('active'); handleStickMove(e.clientX, e.clientY); });
-window.addEventListener('mousemove', e => { if (draggingStick) { e.preventDefault(); handleStickMove(e.clientX, e.clientY); } });
-window.addEventListener('mouseup', () => { if (draggingStick) { draggingStick = false; resetStick(); } });
 
 // ═══════════════════════════════════════════════════
 //  BUTTON TOUCH HANDLING (multi-touch)
@@ -732,7 +527,6 @@ window.addEventListener('mouseup', () => { if (draggingStick) { draggingStick = 
 const touchMap = new Map();
 
 document.getElementById('controls').addEventListener('touchstart', e => {
-  if (e.target.closest('#analogStick')) return;
   e.preventDefault();
   for (const t of e.changedTouches) {
     const btn = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-action]');
@@ -745,7 +539,6 @@ document.getElementById('controls').addEventListener('touchstart', e => {
 }, { passive: false });
 
 document.getElementById('controls').addEventListener('touchmove', e => {
-  if (e.target.closest('#analogStick')) return;
   e.preventDefault();
   for (const t of e.changedTouches) {
     const newBtn = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-action]');
@@ -763,7 +556,6 @@ document.getElementById('controls').addEventListener('touchmove', e => {
 }, { passive: false });
 
 document.getElementById('controls').addEventListener('touchend', e => {
-  if (e.target.closest('#analogStick')) return;
   e.preventDefault();
   for (const t of e.changedTouches) {
     const action = touchMap.get(t.identifier);
@@ -771,9 +563,8 @@ document.getElementById('controls').addEventListener('touchend', e => {
   }
 }, { passive: false });
 
-// Mouse click support for desktop testing
+// Mouse support for desktop
 document.querySelectorAll('[data-action]').forEach(btn => {
-  if (btn.closest('#analogStick')) return;
   const action = btn.dataset.action;
   btn.addEventListener('mousedown', e => { e.preventDefault(); pressAction(action); });
   btn.addEventListener('mouseup',   () => releaseAction(action));
@@ -781,45 +572,29 @@ document.querySelectorAll('[data-action]').forEach(btn => {
 });
 
 // ═══════════════════════════════════════════════════
-//  KEYBOARD → GAMEPAD PASSTHROUGH (for desktop users)
-//  Maps physical keyboard to the virtual gamepad so
-//  keyboard players also benefit from the same path.
+//  KEYBOARD SUPPORT
 // ═══════════════════════════════════════════════════
 const KB_MAP = {
-  'KeyX':      'A',      // X key → N64 A
-  'KeyZ':      'B',      // Z key → N64 B
+  'KeyZ':      'B',
+  'KeyX':      'A',
+  'KeyA':      'Y',
+  'KeyS':      'X',
   'Enter':     'START',
+  'ShiftRight':'SELECT',
   'KeyQ':      'L',
-  'KeyE':      'R',
-  'ShiftLeft': 'Z',      // Left shift → Z trigger
-  'KeyW':      'DUP',
-  'KeyS':      'DDOWN',
-  'KeyA':      'DLEFT',
-  'KeyD':      'DRIGHT',
-  'ArrowUp':   null,     // handled via analog axes below
-  'ArrowDown': null,
-  'ArrowLeft': null,
-  'ArrowRight':null,
-  'KeyI':      'CU',
-  'KeyK':      'CD',
-  'KeyJ':      'CL',
-  'KeyL':      'CR',
+  'KeyW':      'R',
+  'ArrowUp':   'DUP',
+  'ArrowDown': 'DDOWN',
+  'ArrowLeft': 'DLEFT',
+  'ArrowRight':'DRIGHT',
 };
 
-const kbAxisState = { x: 0, y: 0 };
 window.addEventListener('keydown', e => {
   if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault();
-  // Arrow keys → analog stick
-  if (e.code === 'ArrowUp')    { kbAxisState.y = -1; gpAxes[1] = -1; return; }
-  if (e.code === 'ArrowDown')  { kbAxisState.y =  1; gpAxes[1] =  1; return; }
-  if (e.code === 'ArrowLeft')  { kbAxisState.x = -1; gpAxes[0] = -1; return; }
-  if (e.code === 'ArrowRight') { kbAxisState.x =  1; gpAxes[0] =  1; return; }
   const action = KB_MAP[e.code];
   if (action && !e.repeat) pressAction(action);
 });
 window.addEventListener('keyup', e => {
-  if (e.code === 'ArrowUp'   || e.code === 'ArrowDown')  { kbAxisState.y = 0; gpAxes[1] = 0; return; }
-  if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') { kbAxisState.x = 0; gpAxes[0] = 0; return; }
   const action = KB_MAP[e.code];
   if (action) releaseAction(action);
 });
@@ -833,30 +608,7 @@ window.Module = {
   print:    console.log,
   printErr: console.warn,
   onRuntimeInitialized: function() {
-    console.log('[LemonN64] Runtime ready — injecting virtual gamepad');
-    // Ensure SDL2 game_controllers table has our pad at index 0
-    // so the core finds it when it calls SDL_NumJoysticks()
-    const tryInjectSDLGamepad = () => {
-      try {
-        const sdl2 = window.SDL2 || Module.SDL2;
-        if (!sdl2) return;
-        if (!sdl2.game_controllers) sdl2.game_controllers = {};
-        if (!sdl2.game_controllers[0]) {
-          sdl2.game_controllers[0] = {
-            axes:      Array.from(gpAxes),
-            buttons:   Array.from(gpButtons),
-            timestamp: performance.now(),
-            id: 'Xbox 360 Controller',
-          };
-          console.log('[LemonN64] SDL2 game_controllers[0] injected');
-        }
-        if (!sdl2.gamepads) sdl2.gamepads = {};
-        sdl2.gamepads[0] = buildFakeGamepad();
-      } catch(e) { console.warn('[LemonDS] SDL2 inject:', e); }
-    };
-    tryInjectSDLGamepad();
-    setTimeout(tryInjectSDLGamepad, 200);
-    // Re-fire connect event after WASM is live
+    console.log('[DS] Runtime ready');
     setTimeout(fireGamepadConnected, 50);
     setTimeout(fireGamepadConnected, 500);
   },
@@ -870,15 +622,13 @@ document.getElementById('romInput').addEventListener('change', function() {
   reader.onload = ev => {
     try {
       const data = new Uint8Array(ev.target.result);
-      Module.FS.writeFile('/rom.z64', data);
+      Module.FS.writeFile('/rom.nds', data);
       if (window.SDL2?.audioContext) SDL2.audioContext.resume();
-      // Re-apply resolution after core initializes (core may resize canvas)
       setTimeout(() => setCanvasResolution(resMultiplier), 200);
-      Module.callMain(['/rom.z64']);
-      // Re-fire gamepad connect so core registers the pad after ROM load
+      Module.callMain(['/rom.nds']);
       setTimeout(fireGamepadConnected, 300);
       setTimeout(fireGamepadConnected, 1500);
-    } catch(e) { console.error('[LemonDS] ROM load error:', e); }
+    } catch(e) { console.error('[DS] ROM load error:', e); }
   };
   reader.readAsArrayBuffer(file);
 });
@@ -909,16 +659,10 @@ document.getElementById('btnSaveState').addEventListener('click', () => {
   toggleSettings();
 });
 
-// Direct listeners on B button to bypass elementFromPoint
-const btnB = document.querySelector('.btn-b');
-btnB.addEventListener('touchstart', e => { e.preventDefault(); e.stopPropagation(); pressAction('B'); }, { passive: false });
-btnB.addEventListener('touchend',   e => { e.preventDefault(); e.stopPropagation(); releaseAction('B'); }, { passive: false });
-
-// Continuously update debug overlay when visible
 setInterval(() => { if (debugVisible) updateDebug(); }, 100);
 </script>
 
-<!-- Load the mupen64plus_next libretro WASM core -->
-<script src="melonds_libretro.js"></script>
+<!-- Load the DS libretro WASM core (e.g., desmume or melonDS) -->
+<script src="desmume_libretro.js"></script>
 </body>
 </html>
