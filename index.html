@@ -13,10 +13,6 @@
     --glass-border: rgba(255, 255, 255, 0.1);
     --text-muted: rgba(255, 255, 255, 0.4);
     --fg: #e8f0ff;
-    --a-btn: #4969e6;
-    --b-btn: #2aa850;
-    --x-btn: #f0bd00;
-    --y-btn: #e84855;
     --radius-md: 16px;
     --radius-lg: 24px;
   }
@@ -139,44 +135,75 @@
     display: flex; align-items: center; justify-content: center;
     touch-action: none;
     cursor: pointer;
-    transition: transform 0.1s, background 0.1s, color 0.1s, border-color 0.1s;
+    transition: transform 0.05s, background 0.1s, box-shadow 0.1s, border-color 0.1s;
     -webkit-tap-highlight-color: transparent;
   }
   .touch-btn.pressed {
-    background: rgba(255,255,255,0.15); color: #fff;
+    background: rgba(255,255,255,0.15);
+    border-color: var(--acc);
+    box-shadow: 0 0 15px var(--acc-glow);
     transform: scale(0.92);
-    border-color: rgba(255,255,255,0.3);
-    box-shadow: 0 0 15px rgba(255,255,255,0.1);
   }
 
   /* LEFT GROUP - D-Pad */
   .group-left { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: calc(var(--s) * 1); position: relative; }
-  .dpad { width: calc(var(--s) * 13); height: calc(var(--s) * 13); position: relative; }
-  .dpad-btn { position: absolute; width: calc(var(--s) * 4.5); height: calc(var(--s) * 4.5); border-radius: 6px; }
-  .dpad-btn.up    { top: 0; left: calc(var(--s) * 4.25); border-radius: 8px 8px 2px 2px; }
-  .dpad-btn.down  { bottom: 0; left: calc(var(--s) * 4.25); border-radius: 2px 2px 8px 8px; }
-  .dpad-btn.left  { top: calc(var(--s) * 4.25); left: 0; border-radius: 8px 2px 2px 8px; }
-  .dpad-btn.right { top: calc(var(--s) * 4.25); right: 0; border-radius: 2px 8px 8px 2px; }
-  .dpad-center { position: absolute; top: calc(var(--s) * 4.25); left: calc(var(--s) * 4.25); width: calc(var(--s) * 4.5); height: calc(var(--s) * 4.5); background: var(--glass); pointer-events: none; }
+  .dpad { width: calc(var(--s) * 16); height: calc(var(--s) * 16); position: relative; }
+  .dpad-btn { position: absolute; width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); }
+  .dpad-btn.up    { top: 0; left: calc(var(--s) * 5.25); border-radius: calc(var(--s) * 1.2) calc(var(--s) * 1.2) 4px 4px; }
+  .dpad-btn.down  { bottom: 0; left: calc(var(--s) * 5.25); border-radius: 4px 4px calc(var(--s) * 1.2) calc(var(--s) * 1.2); }
+  .dpad-btn.left  { top: calc(var(--s) * 5.25); left: 0; border-radius: calc(var(--s) * 1.2) 4px 4px calc(var(--s) * 1.2); }
+  .dpad-btn.right { top: calc(var(--s) * 5.25); right: 0; border-radius: 4px calc(var(--s) * 1.2) calc(var(--s) * 1.2) 4px; }
+  .dpad-center { position: absolute; top: calc(var(--s) * 5.25); left: calc(var(--s) * 5.25); width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); background: var(--glass); pointer-events: none; }
 
-  /* CENTER GROUP */
+  /* Chevron arrows on d-pad */
+  .chevron {
+    border: solid rgba(255,255,255,0.3);
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: calc(var(--s) * 0.55);
+    transition: border-color 0.1s;
+    pointer-events: none;
+  }
+  .dpad-btn.pressed .chevron { border-color: var(--acc); }
+  .dpad-btn.up    .chevron { transform: rotate(-135deg) translateY(-1px); }
+  .dpad-btn.down  .chevron { transform: rotate(45deg)   translateY(-1px); }
+  .dpad-btn.left  .chevron { transform: rotate(135deg)  translateY(-1px); }
+  .dpad-btn.right .chevron { transform: rotate(-45deg)  translateY(-1px); }
+
+  /* CENTER GROUP - pill buttons */
   .group-center { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: calc(var(--s) * 1); padding-bottom: calc(var(--s) * 2); }
-  .btn-select, .btn-start { width: calc(var(--s) * 6); height: calc(var(--s) * 2.5); border-radius: calc(var(--s) * 1.5); font-size: calc(var(--s) * 0.9); font-weight: 700; letter-spacing: 0.5px; }
+  .btn-select, .btn-start {
+    width: calc(var(--s) * 7); height: calc(var(--s) * 2.5);
+    border-radius: 20px;
+    font-size: calc(var(--s) * 0.9); font-weight: 700; letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .btn-select.pressed, .btn-start.pressed { color: var(--acc); }
 
   /* RIGHT GROUP */
   .group-right { position: relative; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: calc(var(--s) * 1); }
   .shoulder-row { display: flex; gap: calc(var(--s) * 1.5); margin-bottom: calc(var(--s) * 1); }
-  .btn-shoulder { width: calc(var(--s) * 6); height: calc(var(--s) * 3); border-radius: calc(var(--s) * 1.5); font-size: calc(var(--s) * 1.1); font-weight: 700; }
-  .face-buttons { position: relative; width: calc(var(--s) * 13); height: calc(var(--s) * 13); flex-shrink: 0; }
-  .btn-circle { position: absolute; border-radius: 50%; font-weight: 700; font-size: calc(var(--s) * 1.8); pointer-events: all; }
-  .btn-a { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); right: 0; top: calc(var(--s) * 3.75); color: #9bb0ff; border-color: rgba(73, 105, 230, 0.3); z-index: 1; }
-  .btn-a.pressed { background: var(--a-btn); color: #fff; border-color: var(--a-btn); }
-  .btn-b { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); right: calc(var(--s) * 3.75); bottom: 0; color: #8affae; border-color: rgba(42, 168, 80, 0.3); z-index: 1; }
-  .btn-b.pressed { background: var(--b-btn); color: #fff; border-color: var(--b-btn); }
-  .btn-x { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); right: calc(var(--s) * 3.75); top: 0; color: #ffe89b; border-color: rgba(240, 189, 0, 0.3); z-index: 1; }
-  .btn-x.pressed { background: var(--x-btn); color: #000; border-color: var(--x-btn); }
-  .btn-y { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); left: 0; top: calc(var(--s) * 3.75); color: #ff9b9b; border-color: rgba(232, 72, 85, 0.3); z-index: 1; }
-  .btn-y.pressed { background: var(--y-btn); color: #fff; border-color: var(--y-btn); }
+  .btn-shoulder {
+    width: calc(var(--s) * 6); height: calc(var(--s) * 3);
+    border-radius: 20px;
+    font-size: calc(var(--s) * 1.1); font-weight: 800;
+    color: var(--text-muted);
+  }
+  .btn-shoulder.pressed { color: var(--acc); }
+
+  .face-buttons { position: relative; width: calc(var(--s) * 16); height: calc(var(--s) * 16); flex-shrink: 0; }
+  .btn-circle {
+    position: absolute; border-radius: 50%;
+    font-weight: 800; font-size: calc(var(--s) * 1.8);
+    pointer-events: all;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+    color: var(--text-muted);
+  }
+  .btn-circle.pressed { color: var(--acc); border-color: var(--acc); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2), 0 0 15px var(--acc-glow); }
+  .btn-a { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); right: 0; top: calc(var(--s) * 5.25); z-index: 1; }
+  .btn-b { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); right: calc(var(--s) * 5.25); bottom: 0; z-index: 1; }
+  .btn-x { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); right: calc(var(--s) * 5.25); top: 0; z-index: 1; }
+  .btn-y { width: calc(var(--s) * 5.5); height: calc(var(--s) * 5.5); left: 0; top: calc(var(--s) * 5.25); z-index: 1; }
 
   .settings-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); z-index: 100; align-items: center; justify-content: center; }
   .settings-modal.active { display: flex; }
@@ -213,7 +240,6 @@
   <div class="icon-btn" id="btnSettings" title="Settings">
     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
   </div>
-  <div class="icon-btn" id="btnDebug" title="Toggle input debug" style="font-size:16px;">🐛</div>
 </div>
 
 <div class="game-container">
@@ -224,18 +250,18 @@
       <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:12px;opacity:0.3"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
       LOAD A DS ROM TO PLAY
     </div>
-    <div id="debugOverlay" style="display:none;position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;font-family:monospace;color:#0f0;background:rgba(0,0,0,0.7);padding:4px;z-index:10;pointer-events:none;"></div>
   </div>
 </div>
 
 <div class="controls-area" id="controls">
   <div class="group-left">
+    <div class="touch-btn btn-shoulder" data-action="L" style="align-self:flex-start;">L</div>
     <div class="dpad">
       <div class="dpad-center"></div>
-      <div class="touch-btn dpad-btn up"    data-action="DUP"></div>
-      <div class="touch-btn dpad-btn down"  data-action="DDOWN"></div>
-      <div class="touch-btn dpad-btn left"  data-action="DLEFT"></div>
-      <div class="touch-btn dpad-btn right" data-action="DRIGHT"></div>
+      <div class="touch-btn dpad-btn up"    data-action="DUP"><span class="chevron"></span></div>
+      <div class="touch-btn dpad-btn down"  data-action="DDOWN"><span class="chevron"></span></div>
+      <div class="touch-btn dpad-btn left"  data-action="DLEFT"><span class="chevron"></span></div>
+      <div class="touch-btn dpad-btn right" data-action="DRIGHT"><span class="chevron"></span></div>
     </div>
   </div>
   <div class="group-center">
@@ -244,7 +270,6 @@
   </div>
   <div class="group-right">
     <div class="shoulder-row">
-      <div class="touch-btn btn-shoulder" data-action="L">L</div>
       <div class="touch-btn btn-shoulder" data-action="R">R</div>
     </div>
     <div class="face-buttons">
@@ -363,7 +388,6 @@ function pressAction(action) {
   if (ACTION_GP_MAP[action] !== undefined) gpButtons[ACTION_GP_MAP[action]] = 1;
   document.querySelectorAll(`[data-action="${action}"]`).forEach(el => el.classList.add('pressed'));
   if (navigator.vibrate) navigator.vibrate(8);
-  updateDebug();
 }
 
 function releaseAction(action) {
@@ -371,7 +395,6 @@ function releaseAction(action) {
   if (k) dispatchKey('keyup', k);
   if (ACTION_GP_MAP[action] !== undefined) gpButtons[ACTION_GP_MAP[action]] = 0;
   document.querySelectorAll(`[data-action="${action}"]`).forEach(el => el.classList.remove('pressed'));
-  updateDebug();
 }
 
 // ═══════════════════════════════════════════════════
@@ -414,7 +437,6 @@ canvas.addEventListener('touchstart', e => {
       const rx = Math.max(0, Math.min(1, (t.clientX - rect.left) / rect.width));
       const ry = Math.max(0, Math.min(1, (t.clientY - (rect.top + rect.height * 0.5)) / (rect.height * 0.5)));
       dsTouch = { active: true, x: Math.round(rx * 255), y: Math.round(ry * 191) };
-      updateDebug();
     }
   }
   // Don't preventDefault — let rwebinput see the event on the canvas naturally
@@ -427,7 +449,6 @@ canvas.addEventListener('touchmove', e => {
       const rx = Math.max(0, Math.min(1, (t.clientX - rect.left) / rect.width));
       const ry = Math.max(0, Math.min(1, (t.clientY - (rect.top + rect.height * 0.5)) / (rect.height * 0.5)));
       dsTouch = { active: true, x: Math.round(rx * 255), y: Math.round(ry * 191) };
-      updateDebug();
     }
   }
 }, { passive: true });
@@ -440,7 +461,6 @@ canvas.addEventListener('touchend', e => {
   }
   if (bottomTouchIds.size === 0) {
     dsTouch = { active: false, x: 0, y: 0 };
-    updateDebug();
   }
 }, { passive: true });
 
@@ -448,7 +468,6 @@ canvas.addEventListener('touchcancel', e => {
   for (const t of e.changedTouches) bottomTouchIds.delete(t.identifier);
   if (bottomTouchIds.size === 0) {
     dsTouch = { active: false, x: 0, y: 0 };
-    updateDebug();
   }
 }, { passive: true });
 
@@ -463,7 +482,6 @@ canvas.addEventListener('mousedown', e => {
     const rx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const ry = Math.max(0, Math.min(1, (e.clientY - (rect.top + rect.height * 0.5)) / (rect.height * 0.5)));
     dsTouch = { active: true, x: Math.round(rx * 255), y: Math.round(ry * 191) };
-    updateDebug();
   }
 });
 canvas.addEventListener('mousemove', e => {
@@ -472,18 +490,15 @@ canvas.addEventListener('mousemove', e => {
     const rx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const ry = Math.max(0, Math.min(1, (e.clientY - (rect.top + rect.height * 0.5)) / (rect.height * 0.5)));
     dsTouch = { active: true, x: Math.round(rx * 255), y: Math.round(ry * 191) };
-    updateDebug();
   }
 });
 canvas.addEventListener('mouseup', () => {
   mouseDownOnBottom = false;
   dsTouch = { active: false, x: 0, y: 0 };
-  updateDebug();
 });
 canvas.addEventListener('mouseleave', () => {
   mouseDownOnBottom = false;
   dsTouch = { active: false, x: 0, y: 0 };
-  updateDebug();
 });
 
 // ═══════════════════════════════════════════════════
@@ -654,28 +669,11 @@ scanlinesToggle.addEventListener('click', () => {
   document.getElementById('scanlines').classList.toggle('active');
 });
 
-let debugVisible = false;
-function updateDebug() {
-  const el = document.getElementById('debugOverlay');
-  if (!el || !debugVisible) return;
-  const btns  = Array.from(gpButtons).map((v,i) => v ? `B${i}` : '').filter(Boolean);
-  const touch = dsTouch.active ? ` | TOUCH(${dsTouch.x},${dsTouch.y})` : '';
-  el.textContent = `BTN:[${btns.join(' ')}]${touch}`;
-}
-
-document.getElementById('btnDebug').addEventListener('click', () => {
-  debugVisible = !debugVisible;
-  const el = document.getElementById('debugOverlay');
-  el.style.display = debugVisible ? 'block' : 'none';
-  if (debugVisible) updateDebug();
-});
-
 document.getElementById('btnSaveState').addEventListener('click', () => {
   if (typeof Module._cmd_save_state === 'function') Module._cmd_save_state();
   toggleSettings();
 });
 
-setInterval(() => { if (debugVisible) updateDebug(); }, 100);
 </script>
 
 </body>
